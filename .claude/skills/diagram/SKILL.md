@@ -53,7 +53,7 @@ palette) and choose the **structure** from what you're actually drawing:
 
 | Subject shape | Right composition |
 |---|---|
-| One controller managing N identical units (e.g. Coolify → many projects) | A control-plane header → grid of repeated unit cards → shared foundation bar |
+| One controller managing N identical units (e.g. an orchestrator → many deployments) | A control-plane header → grid of repeated unit cards → shared foundation bar |
 | A layered system / service | Stacked tiers + a cross-cutting concerns rail down the side |
 | **Data / product lifecycle** | Horizontal **sources → ingest → store → aggregate → channels**, with fast-paths and feedback edges drawn explicitly |
 | A process / workflow | Stages left→right with branch and decision edges |
@@ -71,8 +71,8 @@ replaced it with the real path.
 
 **3. Steal the palette from the subject's own design system.**
 If the thing you're drawing has a UI, grep its CSS for color tokens and use them verbatim
-(`grep -nE '\-\-color|#[0-9a-f]{6}' app.css`). The app's color tokens
-came straight from `src/app.css` — far better than a guessed palette, and instantly
+(`grep -nE '\-\-color|#[0-9a-f]{6}' <stylesheet>`). Pull the palette straight from
+the app's own global stylesheet — far better than a guessed palette, and instantly
 on-brand.
 
 ---
@@ -85,10 +85,10 @@ on-brand.
 - **Coordinate-driven (SVG edges).** Define every node once as `{x,y,w,h}`, place the HTML
   divs absolutely, and draw an SVG `.edges` layer of bezier `<path>`s with `<marker>`
   arrowheads — all computed from the *same* coordinates. `template.mjs` is exactly this.
-  A back-edge (e.g. "web UI writes credentials back to storage") or a stage-skipping
-  fast-path (e.g. "real-time alert bypasses storage + aggregation") can ONLY be shown
+  A back-edge (e.g. "a settings screen writes a value back to the store") or a stage-skipping
+  fast-path (e.g. "a live event bypasses the batch pipeline") can ONLY be shown
   honestly with real arrows — flex can't draw them. Use this when you want **total control
-  of the composition** (the lifecycle diagram was hand-placed for exactly that reason).
+  of the composition** (a lifecycle diagram was hand-placed for exactly that reason).
 - **Auto-layout (ELK).** The fix for hand-placing coordinates. Describe the graph
   declaratively (nodes with box sizes, edges with source/target); **elkjs** computes
   positions AND routes the edges — its `layered` algorithm is built for directed node-link

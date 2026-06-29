@@ -82,9 +82,9 @@ Playwright, no test framework.
   composition order → a "shrink in place" drifts toward 0,0. Shrink via
   `transform: translate() scale()` in one property, or split parent/child, or just fade.)
 - **Verify on the main-checkout dev server, not a worktree.** A bundler's out-of-tree
-  file-access allowlist (e.g. Vite's `server.fs.allow`) can block a worktree's symlinked
-  `node_modules` → blank page. Edit in the worktree, run the framework's sync + type-check,
-  merge to the working branch, then verify HMR on the single main-checkout dev server.
+  file-access allowlist can block a worktree's symlinked `node_modules` → blank page. Edit
+  in the worktree, run your framework's codegen + type-check, merge to the working branch,
+  then verify HMR on the single main-checkout dev server.
 - **Navigate + sleep BEFORE touching `localStorage`** — the blank initial document throws
   a `SecurityError`. The harness does this; keep it if you adapt the flow.
 - If the feature is gated on app state (e.g. an animated character that only mounts

@@ -35,7 +35,7 @@ pre-registered threshold after a signal lands — supersede the row and keep the
    world, not a feature). May be lifted from a prior `/reframe` `outcome`.
 
 2. **List load-bearing assumptions** — everything that must be true for the bet to pay off.
-   State each so it *can be wrong* ("accountants will hand us their documents unprompted"),
+   State each so it *can be wrong* ("tutors will write up every lesson the day it happens"),
    not as a goal ("great onboarding"). Surface the assumptions that would *kill the bet* if
    false, not the convenient ones you already believe.
 
@@ -137,14 +137,14 @@ Rules baked into the shape:
 
 ## Reference example
 
-**Bet:** freelancers will pay for a tool that auto-generates and chases their invoices
-instead of doing it by hand in spreadsheets.
+**Bet:** independent tutors will pay for a tool that auto-writes their post-lesson parent
+summaries instead of typing them by hand after every session.
 
 | id | assumption | risk | experiment | threshold (pre-registered) | signal | decision |
 |----|------------|------|------------|----------------------------|--------|----------|
-| A-1 | Freelancers will pay a monthly subscription to automate invoicing rather than keep doing it free in a spreadsheet | **high** — if false, the whole paid-product bet dies; and we don't know it | dry-wallet: self-serve "start automating" page that takes a real (refundable) $15 first-month charge | pass ≥ 4 of first 15 / kill < 4 of first 15 targeted freelancers complete the charge; read only after all 15. **Can't conclude:** a sub-threshold result can't separate "won't pay" from "won't self-serve" — below kill, open an assisted-onboarding row before killing the bet | [PENDING] | [open] |
-| A-2 | The auto-generated invoices are correct enough to send unattended | **high** — a wrong invoice to a client burns trust irrecoverably | error-analysis: read 80 real generated invoices, code every mismatch into failure modes, rank by frequency | same measure = top failure mode's rate over 80 invoices: pass ≤ 5% / pivot 5–15% (narrow unattended scope, retest) / kill > 15%; read only after all 80 are coded | [PENDING] | [open] |
-| A-3 | There's interest in "auto-chase my late invoices" at all | med — cheap to learn, lowest fatality | fake-door: labeled CTA on the dashboard → interstitial + email capture | pass ≥ 8% / kill < 3% click→capture in the freelancer segment; read only after ≥ 200 segment impressions — **note: this proves curiosity, not WTP; A-1 is the real money test** | [PENDING] | [open] |
+| A-1 | Tutors will pay a monthly subscription to automate parent summaries rather than keep typing them free after each lesson | **high** — if false, the whole paid-product bet dies; and we don't know it | dry-wallet: self-serve "start automating" page that takes a real (refundable) $15 first-month charge | pass ≥ 4 of first 15 / kill < 4 of first 15 targeted tutors complete the charge; read only after all 15. **Can't conclude:** a sub-threshold result can't separate "won't pay" from "won't self-serve" — below kill, open an assisted-onboarding row before killing the bet | [PENDING] | [open] |
+| A-2 | The auto-written summaries are accurate enough to send to a parent unattended | **high** — a wrong summary about a child burns trust irrecoverably | error-analysis: read 80 real generated summaries, code every mismatch into failure modes, rank by frequency | same measure = top failure mode's rate over 80 summaries: pass ≤ 5% / pivot 5–15% (narrow unattended scope, retest) / kill > 15%; read only after all 80 are coded | [PENDING] | [open] |
+| A-3 | There's interest in "auto-write my parent summaries" at all | med — cheap to learn, lowest fatality | fake-door: labeled CTA on the dashboard → interstitial + email capture | pass ≥ 8% / kill < 3% click→capture in the tutor segment; read only after ≥ 200 segment impressions — **note: this proves curiosity, not WTP; A-1 is the real money test** | [PENDING] | [open] |
 
 A-1 is tested first (most fatal × least known). A-3's threshold explicitly records that a
 click cannot conclude payment — the money question lives in A-1. No row's threshold may be

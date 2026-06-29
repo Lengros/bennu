@@ -128,7 +128,7 @@ Scan results become `signal` rows with `[Observed: <artifact>, <strength>, <date
 ---
 
 ## Worked examples (this skill's calibration)
-Illustrative pair for a bet like a freelancer-invoicing tool — the skill's two lenses in action:
+Illustrative pair for a bet like a tutor parent-summary tool — the skill's two lenses in action:
 - **Supply lens** → `docs/market-scan.md` (competitor/coverage scan; if rival tools already
   cover the job at the target price, it falsifies the literal "no solution" premise and feeds
   the corresponding ledger assumption).

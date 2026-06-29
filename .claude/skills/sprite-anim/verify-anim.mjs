@@ -9,7 +9,7 @@
 //     over DOMMatrix.m41 — the matrix reflects only `transform`, not separate
 //     scale/translate/rotate properties, so a rect/matrix disagreement is REAL drift)
 //   Verify on the main-checkout dev server after ff-merge, NOT a worktree server —
-//     Vite fs.allow blanks an out-of-tree worktree.
+//     a bundler's out-of-tree fs allowlist can blank a worktree.
 //
 // Edit the CONFIG block, then:  node verify-anim.mjs
 // Gotchas baked in: navigate + sleep BEFORE touching localStorage (else SecurityError
@@ -22,12 +22,12 @@ import { writeFileSync } from 'node:fs';
 const CONFIG = {
   chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
   port: 9444,
-  url: 'http://localhost:5175/',          // the MAIN-checkout dev server, not a worktree
+  url: 'http://localhost:3000/',          // set to your dev server (main checkout, not a worktree)
   window: '1280,360',
 
   // JS run once after first navigate, BEFORE reload. Seed mock state / localStorage here.
   // Leave '' to skip. (Runs on a real document, so localStorage is allowed.)
-  setup: `localStorage.setItem('app:data-source','mock');`,
+  setup: `localStorage.setItem('demo:mock-mode','on');`,
   reloadAfterSetup: true,
 
   settleMs: 2600,                          // wait after reload for the scene to settle

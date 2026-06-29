@@ -1,6 +1,6 @@
 ---
 name: reframe
-description: Turn a request into a verifiable problem statement before any work starts. Treats the literal ask as a proposed solution (output) and regresses it to the real result the user wants (outcome), then makes that outcome falsifiable. Use when a request arrives as an already-chosen action ("congratulate Ilya", "build a dashboard", "add a button", "send a reminder"), when the true goal is fuzzy, or when you want an intent spec a fresh executor could pick up cold. Russian triggers: "переосмысли задачу", "что на самом деле нужно", "собери ТЗ", "outcome не output", "разбери задачу до корня".
+description: Turn a request into a verifiable problem statement before any work starts. Treats the literal ask as a proposed solution (output) and regresses it to the real result the user wants (outcome), then makes that outcome falsifiable. Use when a request arrives as an already-chosen action ("congratulate a teammate", "build a dashboard", "add a button", "send a reminder"), when the true goal is fuzzy, or when you want an intent spec a fresh executor could pick up cold. Russian triggers: "переосмысли задачу", "что на самом деле нужно", "собери ТЗ", "outcome не output", "разбери задачу до корня".
 ---
 
 # /reframe — output → outcome problem framer
@@ -26,8 +26,8 @@ mid-pass.
 
 1. **Capture** — record the request verbatim in `original_request`. Do not improve it.
 
-2. **Root cause (5 Whys)** — `root_cause`. Name what the request *is* ("«поздравить» — это
-   output, решение"), then ask why until you hit the driver — the change the user actually
+2. **Root cause (5 Whys)** — `root_cause`. Name what the request *is* ("congratulate" is an output — a
+   chosen action), then ask why until you hit the driver — the change the user actually
    wants in the world. Stop when the next "why" would leave this person's actual situation.
    Tag the driver: `[Observed: …]` if the conversation supplies it, `[ASSUMPTION]` if you
    inferred it. An untagged root cause is a defect.
@@ -68,7 +68,7 @@ mid-pass.
 
 7. **Solution + cuts** — `solution` is the *minimal critical chain* that delivers the
    outcome, named in one line (what it is and, sharper, what it is **not**). `out_of_scope`
-   lists what you deliberately drop and why ("торт — это output", "режем 90% лишнего").
+   lists what you deliberately drop and why ("the cake is an output", "cut 90% of the scaffolding").
    Cutting is signal, not laziness — make the cuts explicit.
 
 8. **Delta** — `delta`. State plainly how the understood task differs from the original
@@ -148,8 +148,8 @@ delta: >
 
 ## Reference example
 
-A "congratulate Ilya on his birthday" request, run through the pipeline, regresses to:
-the outcome is not the act of congratulating (output) but Ilya *feeling he changed the
-system* (outcome) — and every AC becomes checkable (grep for clichés → 0; predicates in
-perfective verbs; opens on phone without auth; draws a reply-reaction same day). The full
-worked example lives in this skill's origin discussion; the shape above reproduces it.
+A "congratulate a colleague on their birthday" request, run through the pipeline, regresses
+to: the outcome is not the act of congratulating (output) but the colleague *feeling they
+changed the system* (outcome) — and every AC becomes checkable (grep for clichés → 0; names
+≥1 concrete thing they actually changed; opens on phone without auth; draws a reply-reaction
+same day). The shape above reproduces this worked example.
