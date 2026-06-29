@@ -1,0 +1,49 @@
+#!/bin/bash
+# pre-commit — secret-exposure tripwire over STAGED content.
+#
+# Scans the staged (index) version of added/copied/modified/renamed files via
+# tools/scan-secrets.sh. A finding → block the commit (exit 1). Any tooling
+# error → warn + allow (fail-open: tripwire, not jail — mirrors the Stop hook).
+#
+# Why staged content, not the working tree: a pre-commit gate must judge exactly
+# what is about to enter history, independent of unstaged edits.
+#
+# No path carve-outs (CLAUDE.md §9). The scanner only ever sees STAGED files, so
+# the secret-scanner's own fixture (tests/test-secrets.sh, full of valid-SHAPE
+# fakes) fires only when that file is itself being committed. If you are knowingly
+# committing such a fixture: git commit --no-verify.
+#
+# Enable in a fresh clone: git config core.hooksPath .githooks
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+SCANNER="$REPO_ROOT/tools/scan-secrets.sh"
+[ -f "$SCANNER" ] || exit 0          # scanner gone → don't block (fail-open)
+
+TMP="$(mktemp -d 2>/dev/null)" || exit 0
+trap 'rm -rf "$TMP"' EXIT
+
+# Materialise each staged path's index content under $TMP, preserving the
+# relative path so reports name the real file. NUL-separated to survive spaces.
+set --
+while IFS= read -r -d '' path; do
+  [ -n "$path" ] || continue
+  dest="$TMP/$path"
+  mkdir -p "$(dirname "$dest")" 2>/dev/null || continue
+  git show ":$path" > "$dest" 2>/dev/null || continue   # ":path" = staged blob
+  set -- "$@" "$dest"
+done < <(git diff --cached --name-only --diff-filter=ACMR -z)
+
+[ "$#" -gt 0 ] || exit 0              # nothing staged to scan
+
+# Direct call (no xargs) so $? is the scanner's own code: 1=finding, 2=usage, 0=clean.
+OUT="$(bash "$SCANNER" "$@" 2>&1 >/dev/null)"; RC=$?
+
+if [ "$RC" -eq 1 ]; then
+  printf '%s\n' "$OUT" | sed "s#$TMP/##g" >&2     # strip temp prefix → real paths
+  echo "pre-commit: secret-shaped string in staged content — commit blocked." >&2
+  echo "Redact before committing; if the value is real, rotate it." >&2
+  echo "(Knowingly committing a test fixture? git commit --no-verify)" >&2
+  exit 1
+fi
+[ "$RC" -ne 0 ] && exit 0             # usage/other → fail-open
+exit 0

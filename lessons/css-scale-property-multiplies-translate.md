@@ -1,0 +1,14 @@
+# The CSS `scale` Property Scales a `transform: translate()` Offset Too — Shrink-in-Place Drifts to the 0,0 Corner
+
+date: 2026-06-12
+scope: frontend / css / animation
+rule: Animating CSS `scale` on a translate()'d element scales the offset too → drifts to 0,0; shrink via `transform: scale()`.
+
+## Why
+An animated character sprite's "tuck away" exit dragged the sprite from its perch (top-right, `translateX ≈ 811px`) toward the **top-left 0,0 corner** as it shrank. The element positioned itself with `style:transform={`translate3d(${x}px, ${y}px, 0)`}` and the exit ran a keyframe animating the **individual** `scale` property (`scale: 1 → 0.16`). The two are not independent: the CSS Transforms spec composes the individual transform properties and the `transform` property in a fixed order (`translate → rotate → scale → transform`), so the `scale` factor also multiplies the translation — at `scale 0.16` the effective position became `≈ 0.16 × 811 ≈ 130px`, i.e. it slid toward the origin. I first dismissed the leftward `centerX` march (855→227 measured via CDP) as a `getBoundingClientRect` artifact because the `translateX` matrix value (`m41`) stayed pinned at 811 — but `m41` only reflects the `transform` property, not the separate `scale`, so it looked stable while the rendered box was being dragged to the corner. A late-frame screenshot (sprite shrunk to a dot beside the page title, far from its perch) confirmed the drift was real.
+
+## How to apply
+To shrink an element **in place** that is positioned via `transform: translate()`, do not animate the standalone `scale`/`translate`/`rotate` properties against it — they multiply, pulling toward `transform-origin`/0,0. Options: (1) put the scale **inside the same `transform`** so origin handling is unified — `transform: translate3d(x,y,0) scale(s)` (scale applied after translate within one matrix shrinks around the element's own box); (2) split responsibilities across two elements — translate the parent, scale the child; or (3) avoid scale entirely and fade/opacity out. For the sprite I dropped the shrink altogether (the design only needed hop → "tuck into window" sprite → opacity fade), which also satisfied the "no movement" requirement. Verification note: when an element uses both `transform` and a separate `scale` property, `DOMMatrix(getComputedStyle(el).transform).m41` is **not** the on-screen position — measure `getBoundingClientRect()` center for the truth, and don't wave off a rect/ matrix disagreement as noise.
+
+## Disposition
+First occurrence (decorative sprite close animation, 2026-06-12). Fixed by removing the `scale` keyframe and exiting in place. If this recurs — any "shrink/grow in place" that drifts toward a corner — reach straight for `transform: …translate() scale()` in one property or a parent/child split, and trust `getBoundingClientRect` over the transform matrix when the two disagree.

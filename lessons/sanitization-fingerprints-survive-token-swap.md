@@ -1,0 +1,11 @@
+# Public-Release Sanitization: Domain Fingerprints Survive a Token Swap — Verify with a Fresh Cold Read
+
+date: 2026-06-17
+scope: security / publication / verification
+rule: Name-swapping doesn't make a repo publishable — structure and domain detail still fingerprint it; gate on an independent cold read.
+
+## Why
+Preparing a sibling public fork of this OS, the first pass (one orchestrator + parallel subagents) stripped every obvious proper noun — product names, local paths, emails, secrets, dangling file refs — and a first independent auditor confirmed all of that clean. A second auditor, run as a **fresh cold read with no drafting context**, still found a blocker the token sweep and the first reviewer both missed: a lesson about validator-narrowing still carried a literal tax-scheme / cert-scheme prefix, which fingerprints a national e-invoicing system precisely even though the product name was gone. The earlier deep auditor had already caught a related class (a real internal source path, code symbols, a working branch name, and a product's exact onboarding choreography) that survived because find-and-replace only touches surface tokens, not the reconstructable structure and domain model underneath. Each fresh reader found a strictly deeper layer than the last.
+
+## How to apply
+Sanitization is a structural problem, not a string problem. After the token sweep, run an **independent reader who never saw the drafting** and brief them explicitly to flag, beyond names: real file paths and code symbols, branch names, API endpoints, the product's process/choreography, and any domain detail (here: a cert-scheme prefix, a tax model) specific enough to identify the source even with names removed. For **irreversible** publication (git history + search caches are permanent), escalate to a *second* fresh cold read in a new session — the marginal find rate was non-zero right up to the last pass. Build the fork in a **separate directory** with fresh squashed history so the live system is never mutated and a missed item is fixed before any commit, not rewritten out of history after. Decide drop-vs-generalize per file: project war-stories whose value is purely local → drop; lessons whose principle is reusable → abstract the principle and discard the fingerprint. See [[external-adversarial-review]] and [[prefer-precise-patterns-over-heuristics]].

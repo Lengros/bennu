@@ -1,0 +1,99 @@
+<!doctype html>
+<!--
+  /prototype scaffold — ONE self-contained, multi-screen, clickable HTML prototype.
+  Open straight from disk (file://). No build, no server, no framework, no CDN.
+  Copy this, rename the screens, fill real fake-data. Keep the <script> router intact.
+
+  Why a JS router and not bare CSS :target:
+    - CSS `.screen:target` show/hide does NOT activate under headless Chrome --screenshot,
+      so you cannot render a single screen for the LOOK loop (verified blank, 2026-06-19).
+    - The JS router below reads BOTH `?screen=ID` (render-friendly) and `#hash` (click-friendly)
+      on load AND on hashchange — so per-screen render works and in-browser back/forward works.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype — &lt;flow name&gt;</title>
+<style>
+  :root{
+    /* fidelity dial: lo-fi greyscale by default — raise only if the flow needs it */
+    --bg:#f5f6f7; --surface:#fff; --ink:#1c2024; --muted:#6b7280;
+    --line:#d7dbe0; --accent:#2563eb; --radius:10px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+       background:var(--bg);color:var(--ink)}
+  /* one screen visible at a time */
+  .screen{display:none;min-height:100vh;padding:24px;max-width:480px;margin:0 auto}
+  .screen.active{display:block}
+  /* a "device frame" is optional — drop it for full-bleed flows */
+  .bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+  .btn{display:block;width:100%;padding:14px;border:0;border-radius:var(--radius);
+       background:var(--accent);color:#fff;font:inherit;font-weight:600;text-align:center;
+       text-decoration:none;cursor:pointer;margin-top:12px}
+  .btn.secondary{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+        padding:16px;margin:12px 0}
+  input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:var(--radius);
+        font:inherit;margin-top:6px}
+  .muted{color:var(--muted)}
+  /* the prototype banner — mandatory: this is FAKE state, say so */
+  .proto-flag{position:fixed;bottom:0;left:0;right:0;background:#111;color:#fff;
+        font:12px/1 monospace;padding:6px 10px;text-align:center;opacity:.85}
+</style>
+
+<!-- ============ SCREENS ============ each is one <section class="screen" id="..."> ============ -->
+
+<section class="screen" id="start">
+  <div class="bar"><strong>Demo flow</strong><span class="muted">step 1</span></div>
+  <div class="card">
+    <p>Replace with the first screen of the KEY PATH.</p>
+  </div>
+  <a class="btn" href="#form">Begin</a>
+</section>
+
+<section class="screen" id="form">
+  <div class="bar"><a href="#start" class="muted">&larr; back</a><span class="muted">step 2</span></div>
+  <div class="card">
+    <label>Amount<input id="amt" type="text" placeholder="e.g. 1200" oninput="setState('amt', this.value)"></label>
+  </div>
+  <!-- hotspot that ALSO mutates simulated state before navigating -->
+  <button class="btn" onclick="commit()">Confirm</button>
+</section>
+
+<section class="screen" id="done">
+  <div class="bar"><span class="muted">step 3</span></div>
+  <div class="card">
+    <h2>Confirmed</h2>
+    <!-- displayed value reflected from simulated state -->
+    <p>You entered: <strong id="echo">—</strong></p>
+  </div>
+  <a class="btn secondary" href="#start">Start over</a>
+</section>
+
+<div class="proto-flag">PROTOTYPE — simulated data, not a working product</div>
+
+<script>
+/* ---- minimal reusable wiring: router + simulated state (no backend) ---- */
+function show(id){
+  var screens = document.querySelectorAll('.screen');
+  var target = document.getElementById(id) ? id : screens[0].id;   // unknown id -> first screen
+  screens.forEach(function(s){ s.classList.toggle('active', s.id === target); });
+  window.scrollTo(0,0);
+}
+function route(){
+  // precedence: ?screen=ID (so headless render can target a screen) then #hash then first
+  var q = new URLSearchParams(location.search).get('screen');
+  var h = location.hash.slice(1);
+  show(q || h || '');
+}
+addEventListener('hashchange', route);
+route();
+
+/* simulated state: in-memory + localStorage so it survives a "reload" within the demo */
+var STATE = JSON.parse(localStorage.getItem('proto:state') || '{}');
+function setState(k, v){ STATE[k] = v; localStorage.setItem('proto:state', JSON.stringify(STATE)); }
+function commit(){
+  document.getElementById('echo').textContent = STATE.amt || '(nothing)';
+  location.hash = 'done';                                            // navigate as a hotspot would
+}
+</script>

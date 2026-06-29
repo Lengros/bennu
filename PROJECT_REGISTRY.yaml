@@ -1,0 +1,42 @@
+# Bennu project registry — flat schema.
+# One block per project. Consumed by tools/build-roots-cache.sh (the ONLY YAML parser);
+# hooks read the generated .claude/roots.cache, never this file.
+# Fields: id, path (ABSOLUTE; tilde allowed; no relative), kind, git,
+#         base_branch (omit when main), notes (optional one line),
+#         flow (block scalar; only when base_branch != main or push rules exist).
+#
+# This is an EXAMPLE registry — replace these entries with your own projects.
+
+projects:
+  - id: bennu
+    path: ~/code/bennu
+    kind: code
+    git: true
+    notes: "This operating system itself."
+
+  - id: example-app
+    path: ~/code/example-app
+    kind: code
+    git: true
+    base_branch: develop
+    notes: "Example service that builds on a non-default base branch."
+    flow: |
+      Work in a worktree cut from base_branch `develop`.
+      Merge back = ff-merge into `develop`, then push `develop`.
+      NEVER push a protected `main` — main advances via PR from `develop` only.
+      One driver session, no parallel orchestrators.
+
+  - id: example-docs
+    path: ~/code/example-docs
+    kind: docs
+    git: true
+    base_branch: documentation
+    notes: "Example docs repo — PRDs and research; edited directly, no worktree."
+    flow: |
+      Working branch is `documentation` (the base_branch).
+
+  - id: example-vault
+    path: ~/notes/vault
+    kind: docs
+    git: false
+    notes: "Example personal knowledge vault — edited externally; leave files, don't commit."

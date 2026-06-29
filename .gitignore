@@ -1,0 +1,6 @@
+telemetry/*.jsonl
+telemetry/warnings.log
+telemetry/retro.flag
+telemetry/current-session
+telemetry/.learn-nudged-*
+.claude/roots.cache
